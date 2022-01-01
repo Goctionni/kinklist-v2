@@ -35,7 +35,7 @@ import Dialog from "./Dialog.vue";
 export default class UploadResultDialog extends Vue {
   @Prop() uploadId!: string;
   @Prop() hasEncodedData!: boolean;
-  toast = 'blah';
+  toast = '';
   toastTimeout = 0;
 
   public get uploadUrl(): string {
@@ -43,7 +43,7 @@ export default class UploadResultDialog extends Vue {
   }
 
   public get viewUrl(): string {
-    return this.uploadId ? `${location.protocol}://${location.host}/#${this.uploadId}` : '';
+    return this.uploadId ? `${location.protocol}://${location.host}${location.pathname}#${this.uploadId}` : '';
   }
 
   public copyUploadUrlToClipboard(ref: string, url: string): void {
