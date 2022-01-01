@@ -3,7 +3,8 @@ module.exports = {
     disableHostCheck: true
   },
   ...(() => {
-    if (process.env.GH_BUILD) {
+    console.log(JSON.stringify(process.env));
+    if (process.env.GITHUB_ACTION) {
       return {
         publicPath: '/kinklist-v2/',
       };
