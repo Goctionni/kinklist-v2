@@ -34,7 +34,6 @@
                   v-model="kink.ratings[subcategory]"
                   :name="`${category.name}-kink:${kink.name}-sub:${subcategory}`"
                   :id="`${category.name}-kink:${kink.name}-sub:${subcategory}-${rating.name}`"
-                  :disabled="!editMode"
                 >
                 <label :for="`${category.name}-kink:${kink.name}-sub:${subcategory}-${rating.name}`"></label>
               </div>
