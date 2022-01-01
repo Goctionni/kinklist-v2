@@ -175,7 +175,6 @@ export default class App extends Vue {
   }
 
   public renameSubcategory(category: KinkCategory, event: { oldName: string, newName: string }): void {
-    console.log('Should rename', event);
     for (const kink of category.kinks) {
       kink.ratings[event.newName] = kink.ratings[event.oldName];
       delete kink.ratings[event.oldName];
