@@ -10,7 +10,7 @@ const config = {
     offsetTop: 50,
     offsetLeft: 10,
     offsetRight: 10,
-    offsetBottom: 30,
+    offsetBottom: 10,
     legendItemWidth: 120,
     legendOffset: 15,
 } as const;
@@ -29,24 +29,27 @@ const stripIds = (data: InKinkCategory[]): ExKinkCategory[] => {
 
 export const generateKinklistImage = (inCategories: InKinkCategory[], ratings: Rating[], username: string, encodeData: boolean): HTMLCanvasElement => {
     const exCategories = stripIds(inCategories);
+    const dataPixels = getDataPixels(username, exCategories, ratings);
     const { columns, tallestColumnHeight } = divideCategoryColumns(exCategories);
-    const { canvasWidth, canvasHeight } = getCanvasDimensions(tallestColumnHeight);
+    const { canvasWidth, canvasHeight } = getCanvasDimensions(tallestColumnHeight, dataPixels.length);
     const { canvas, context } = createCanvas(canvasWidth, canvasHeight);
 
     addUsernameToCanvas(context, username);
     drawLegend(context, ratings, canvasWidth);
     drawAllColumns(context, columns, ratings, encodeData);
     if (encodeData) {
-        encodeDataInImage(context, canvasWidth, canvasHeight, username, exCategories, ratings);
+        encodeDataInImage(context, canvasWidth, canvasHeight, dataPixels);
     }
 
     return canvas;
 };
 
-const getCanvasDimensions = (tallestColumnHeight: number): { canvasWidth: number, canvasHeight: number } => {
+const getCanvasDimensions = (tallestColumnHeight: number, numDataPixels: number): { canvasWidth: number, canvasHeight: number } => {
+    const canvasWidth = config.offsetLeft + (config.numCols * config.categoryWidth) + config.offsetRight;
+    const canvasHeight = config.offsetTop + tallestColumnHeight + config.offsetBottom + Math.ceil(numDataPixels / canvasWidth);
     return {
-        canvasWidth: config.offsetLeft + (config.numCols * config.categoryWidth) + config.offsetRight,
-        canvasHeight: config.offsetTop + tallestColumnHeight + config.offsetBottom,
+        canvasWidth,
+        canvasHeight,
     }
 }
 
@@ -199,7 +202,8 @@ const drawLegend = (context: CanvasRenderingContext2D, ratings: Rating[], canvas
     }
 };
 
-const encodeDataInImage = (context: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number, username: string, categories: ExKinkCategory[], ratings: Rating[]): void => {
+type DataPixel = { r: number, g: number, b: number };
+const getDataPixels = (username: string, categories: ExKinkCategory[], ratings: Rating[]): DataPixel[] => {
     const data = JSON.stringify({ username, categories, ratings });
     const bytes = [...data].map((c) => c.charCodeAt(0));
     const pixels = bytes.map((n) => {
@@ -209,6 +213,10 @@ const encodeDataInImage = (context: CanvasRenderingContext2D, canvasWidth: numbe
             b: 254 - ((n & 0b11000000) >> 6),
         };
     });
+    return pixels;
+}
+
+const encodeDataInImage = (context: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number, pixels: DataPixel[]): void => {
     // draw the pixels
     let x = 0;
     let y = canvasHeight - 1;
