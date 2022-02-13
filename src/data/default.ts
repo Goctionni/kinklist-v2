@@ -25,7 +25,7 @@ const createKinkCategory = (name: string, subcategories: string[], kinks: string
 export const getDefaultKinkContent = (defaultRating: string): InKinkCategory[] => [
     createKinkCategory("Bodies", ["General"], ["Skinny", "Chubby", "Small breasts", "Large breasts", "Small cocks", "Large cocks"], defaultRating),
     createKinkCategory("Clothing", ["Self", "Partner"], ["Clothed sex", "Lingerie", "Stockings", "Heels", "Leather", "Latex", "Uniform / costume", "Cross-dressing"], defaultRating),
-    createKinkCategory("Groupings", ["General"], ["You and 1 male", "You and 1 female", "You and MtF trans", "You and FtM trans", "You and 1 male, 1 female", "You and 2 males", "You and 2 females", "Orgy"], defaultRating),
+    createKinkCategory("Groupings", ["General"], ["You and 1 male", "You and 1 female", "You and trans female", "You and trans male", "You and 1 male, 1 female", "You and 2 males", "You and 2 females", "Orgy"], defaultRating),
     createKinkCategory("General", ["Giving", "Receiving"], ["Romance / Affection", "Handjob / fingering", "Blowjob", "Deep throat", "Swallowing", "Facials", "Cunnilingus", "Face-sitting", "Edging", "Teasing", "JOI, SI"], defaultRating),
     createKinkCategory("Ass play", ["Giving", "Receiving"], ["Anal toys", "Anal sex, pegging", "Rimming", "Double penetration", "Anal fisting"], defaultRating),
     createKinkCategory("Restrictive", ["Self", "Partner"], ["Gag", "Collar", "Leash", "Chastity", "Bondage (Light)", "Bondage (Heavy)", "Encasement"], defaultRating),
