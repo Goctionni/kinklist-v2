@@ -1,4 +1,5 @@
-import { KinkCategory } from '../types/kinks';
+import { generateId } from '@/util/idGenerator';
+import { InKinkCategory } from '../types/kinks';
 import { Rating } from '../types/ratings';
 
 export const getDefaultRatings = (): Rating[] => [
@@ -10,16 +11,18 @@ export const getDefaultRatings = (): Rating[] => [
     { name: 'No', color: '#920000' },
 ];
 
-const createKinkCategory = (name: string, subcategories: string[], kinks: string[], defaultRating: string): KinkCategory => ({
+const createKinkCategory = (name: string, subcategories: string[], kinks: string[], defaultRating: string): InKinkCategory => ({
+    id: generateId(),
     name,
     subcategories,
     kinks: kinks.map((kinkname) => ({
+        id: generateId(),
         name: kinkname,
         ratings: subcategories.reduce((map: Record<string, string>, subcategory: string) => ({ ...map, [subcategory]: defaultRating }), {}),
     })),
 });
 
-export const getDefaultKinkContent = (defaultRating: string): KinkCategory[] => [
+export const getDefaultKinkContent = (defaultRating: string): InKinkCategory[] => [
     createKinkCategory("Bodies", ["General"], ["Skinny", "Chubby", "Small breasts", "Large breasts", "Small cocks", "Large cocks"], defaultRating),
     createKinkCategory("Clothing", ["Self", "Partner"], ["Clothed sex", "Lingerie", "Stockings", "Heels", "Leather", "Latex", "Uniform / costume", "Cross-dressing"], defaultRating),
     createKinkCategory("Groupings", ["General"], ["You and 1 male", "You and 1 female", "You and MtF trans", "You and FtM trans", "You and 1 male, 1 female", "You and 2 males", "You and 2 females", "Orgy"], defaultRating),

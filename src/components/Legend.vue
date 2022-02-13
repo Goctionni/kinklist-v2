@@ -19,7 +19,6 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 @Component
 export default class Legend extends Vue {
   @Prop() ratings!: Rating[];
-  @Prop() editMode!: boolean;
 }
 </script>
 

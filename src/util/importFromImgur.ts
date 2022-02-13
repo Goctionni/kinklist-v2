@@ -1,13 +1,18 @@
-import { KinkCategory } from "@/types/kinks";
+import { InKinkCategory, ExKinkCategory, InKink } from "@/types/kinks";
 import { Rating } from "@/types/ratings";
+import { generateId } from './idGenerator';
 
 interface DataFromImgur {
   username: string;
   ratings: Rating[];
-  categories: KinkCategory[];
+  categories: ExKinkCategory[];
 }
 
-export const importDataFromImgur = async (id: string): Promise<DataFromImgur> => {
+interface ParsedDataFromImgur extends DataFromImgur {
+  categories: InKinkCategory[];
+}
+
+export const importDataFromImgur = async (id: string): Promise<ParsedDataFromImgur> => {
   const response = await fetch(`https://i.imgur.com/${id}.png`);
   const imageBlob = await response.blob();
   const imageElement = await blobToImage(imageBlob);
@@ -15,8 +20,21 @@ export const importDataFromImgur = async (id: string): Promise<DataFromImgur> =>
 
   // Read data from image
   const imageJson = tryReadImageData(canvas, context);
-  const { categories, ratings, username } = JSON.parse(imageJson);
-  return { username, ratings, categories }
+  const { categories, ratings, username } = JSON.parse(imageJson) as DataFromImgur;
+  const inCategories: InKinkCategory[] = categories.map((exCat): InKinkCategory => {
+    const inCat: InKinkCategory = {
+      ...exCat,
+      id: generateId(),
+      kinks: exCat.kinks.map((exKink): InKink => {
+        return {
+          ...exKink,
+          id: generateId(),
+        }
+      }),
+    };
+    return inCat;
+  });
+  return { username, ratings, categories: inCategories }
 }
 
 const blobToImage = (blob: Blob): Promise<HTMLImageElement> => {

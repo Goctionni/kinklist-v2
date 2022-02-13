@@ -1,11 +1,20 @@
-export interface Kink {
+export interface ExKink {
     name: string;
     ratings: Record<string, string>;
     comment?: string;
 }
 
-export interface KinkCategory {
+export interface ExKinkCategory {
     name: string;
     subcategories: string[];
-    kinks: Kink[];
+    kinks: ExKink[];
+}
+
+export interface InKink extends ExKink {
+    id: string;
+}
+
+export interface InKinkCategory extends ExKinkCategory {
+    id: string;
+    kinks: InKink[];
 }

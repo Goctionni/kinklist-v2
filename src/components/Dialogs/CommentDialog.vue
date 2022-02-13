@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { Kink, KinkCategory } from "@/types/kinks";
+import { InKink, InKinkCategory } from "@/types/kinks";
 import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 
 import Dialog from "./Dialog.vue";
@@ -21,8 +21,8 @@ import Dialog from "./Dialog.vue";
   },
 })
 export default class CommentDialog extends Vue {
-  @Prop() category!: KinkCategory;
-  @Prop() kink!: Kink;
+  @Prop() category!: InKinkCategory;
+  @Prop() kink!: InKink;
 
   @Emit()
   close(): void { /* Event emitted */ }

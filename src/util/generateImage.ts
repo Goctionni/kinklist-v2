@@ -1,4 +1,4 @@
-import { KinkCategory } from "@/types/kinks";
+import { ExKinkCategory, InKinkCategory, ExKink } from "@/types/kinks";
 import { Rating } from "@/types/ratings";
 
 const config = {
@@ -15,8 +15,21 @@ const config = {
     legendOffset: 15,
 } as const;
 
-export const generateKinklistImage = (categories: KinkCategory[], ratings: Rating[], username: string, encodeData: boolean): HTMLCanvasElement => {
-    const { columns, tallestColumnHeight } = divideCategoryColumns(categories);
+const stripIds = (data: InKinkCategory[]): ExKinkCategory[] => {
+    return data.map((inCat): ExKinkCategory => ({
+        name: inCat.name,
+        subcategories: inCat.subcategories.slice(),
+        kinks: inCat.kinks.map((inKink): ExKink => ({
+            name: inKink.name,
+            ratings: { ...inKink.ratings },
+            comment: inKink.comment,
+        })),
+    }));
+};
+
+export const generateKinklistImage = (inCategories: InKinkCategory[], ratings: Rating[], username: string, encodeData: boolean): HTMLCanvasElement => {
+    const exCategories = stripIds(inCategories);
+    const { columns, tallestColumnHeight } = divideCategoryColumns(exCategories);
     const { canvasWidth, canvasHeight } = getCanvasDimensions(tallestColumnHeight);
     const { canvas, context } = createCanvas(canvasWidth, canvasHeight);
 
@@ -24,7 +37,7 @@ export const generateKinklistImage = (categories: KinkCategory[], ratings: Ratin
     drawLegend(context, ratings, canvasWidth);
     drawAllColumns(context, columns, ratings, encodeData);
     if (encodeData) {
-        encodeDataInImage(context, canvasWidth, canvasHeight, username, categories, ratings);
+        encodeDataInImage(context, canvasWidth, canvasHeight, username, exCategories, ratings);
     }
 
     return canvas;
@@ -37,7 +50,7 @@ const getCanvasDimensions = (tallestColumnHeight: number): { canvasWidth: number
     }
 }
 
-const drawAllColumns = (context: CanvasRenderingContext2D, columns: KinkCategory[][], ratings: Rating[], includeComments: boolean): void => {
+const drawAllColumns = (context: CanvasRenderingContext2D, columns: ExKinkCategory[][], ratings: Rating[], includeComments: boolean): void => {
     for (let i = 0; i < columns.length; i++) {
         const column = columns[i];
         const xOffset = config.offsetLeft + (config.categoryWidth * i);
@@ -70,9 +83,9 @@ const addUsernameToCanvas = (context: CanvasRenderingContext2D, username: string
     context.fillText('Kinklist ' + username, 5, 25);
 }
 
-const divideCategoryColumns = (categories: KinkCategory[]): { columns: KinkCategory[][], tallestColumnHeight: number } => {
+const divideCategoryColumns = (categories: ExKinkCategory[]): { columns: ExKinkCategory[][], tallestColumnHeight: number } => {
     const totalHeight = categories.reduce((sum: number, cat): number => sum + calculateCategoryHeight(cat), 0);
-    const columns: KinkCategory[][] = new Array(config.numCols).fill([]).map(() => []);
+    const columns: ExKinkCategory[][] = new Array(config.numCols).fill([]).map(() => []);
     let colIndex = 0;
     let colHeight = 0;
     let tallestColumnHeight = 0;
@@ -91,7 +104,7 @@ const divideCategoryColumns = (categories: KinkCategory[]): { columns: KinkCateg
     return { columns, tallestColumnHeight };
 }
 
-const calculateCategoryHeight = (category: KinkCategory): number => {
+const calculateCategoryHeight = (category: ExKinkCategory): number => {
     const titleHeight = category.subcategories.length > 1
         ? config.titleWithSubcategoryHeight
         : config.titleWithoutSubcategoryHeight;
@@ -99,7 +112,7 @@ const calculateCategoryHeight = (category: KinkCategory): number => {
     return titleHeight + (category.kinks.length * config.categoryRowHeight);
 };
 
-const drawCategory = (context: CanvasRenderingContext2D, x: number, y: number, category: KinkCategory, ratings: Rating[], includeComments: boolean): void => {
+const drawCategory = (context: CanvasRenderingContext2D, x: number, y: number, category: ExKinkCategory, ratings: Rating[], includeComments: boolean): void => {
     // Draw title
     context.fillStyle = '#000000';
     context.font = 'bold 18px Arial';
@@ -186,7 +199,7 @@ const drawLegend = (context: CanvasRenderingContext2D, ratings: Rating[], canvas
     }
 };
 
-const encodeDataInImage = (context: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number, username: string, categories: KinkCategory[], ratings: Rating[]): void => {
+const encodeDataInImage = (context: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number, username: string, categories: ExKinkCategory[], ratings: Rating[]): void => {
     const data = JSON.stringify({ username, categories, ratings });
     const bytes = [...data].map((c) => c.charCodeAt(0));
     const pixels = bytes.map((n) => {
