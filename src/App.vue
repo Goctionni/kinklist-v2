@@ -6,7 +6,7 @@
         <h1>Kinklist</h1>
         <input type="text" v-model="username" placeholder="Enter username" />
         <div class="spacer"></div>
-        <Legend :ratings="ratings" />
+        <Legend :ratings="ratings" @updateRatings="updateRatings($event)" />
         <ExportButton :loading="uploading" @click="exportImage()" />
         <div class="dropdown-container">
           <button class="dropdown-toggle hide-text" @click="toggleOptions(true)">Options</button>
@@ -189,6 +189,24 @@ export default class App extends Vue {
 
   public removeKink(category: InKinkCategory, kink: InKink): void {
     category.kinks = category.kinks.filter(ck => ck.id !== kink.id);
+  }
+
+  public updateRatings(newRatings: Rating[]): void {
+    type KinkRatings = Record<string, string>;
+    this.ratings = newRatings.map((r) => ({ ...r }));
+    for (const category of this.categories) {
+      for (const kink of category.kinks) {
+        kink.ratings = category.subcategories.reduce((ratings: KinkRatings, subcategory): KinkRatings => {
+          const rating = newRatings.some(nr => nr.name === kink.ratings[subcategory])
+            ? kink.ratings[subcategory]
+            : newRatings[0].name;
+          return {
+            ...ratings,
+            [subcategory]: rating,
+          };
+        }, {});
+      }
+    }
   }
 
   public toggleOptions(newValue: boolean): void {
@@ -410,6 +428,7 @@ header {
   display: flex;
   padding: 10px;
   gap: 1em;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%);
 }
 
 @media (min-width: 1200px) {

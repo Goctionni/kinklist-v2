@@ -40,7 +40,7 @@ import Kink from './Kink.vue';
     Kink,
   },
 })
-export default class extends Vue {
+export default class Category extends Vue {
     @Prop() category!: InKinkCategory;
     @Prop() ratings!: Rating[];
     subcategories: string[] = [];

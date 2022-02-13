@@ -60,7 +60,7 @@ import CommentDialog from "./Dialogs/CommentDialog.vue";
 import PromptDialog from "./Dialogs/PromptDialog.vue";
 
 @Component
-export default class extends Vue {
+export default class Kink extends Vue {
   @Prop() kink!: InKink;
   @Prop() category!: InKinkCategory;
   @Prop() ratings!: Rating[];
