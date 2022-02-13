@@ -189,7 +189,7 @@ input[type="radio"] {
   }
 }
 
-input:checked + label {
+.radio-container label.active {
   &::before {
     opacity: 1;
   }
