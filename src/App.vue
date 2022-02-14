@@ -22,6 +22,7 @@
                   <input type="checkbox" id="encodeData" v-model="encodeData">
                   <label for="encodeData">Encode data</label>
                 </div>
+                <button class="about-btn" @click="showAbout()">About</button>
               </div>
             </div>
           </transition>
@@ -62,6 +63,7 @@ import Category from "./components/Category.vue";
 import UploadResultDialog from "./components/Dialogs/UploadResultDialog.vue";
 import PromptDialog from "./components/Dialogs/PromptDialog.vue";
 import ErrorDialog from "./components/Dialogs/ErrorDialog.vue";
+import AboutDialog from "./components/Dialogs/AboutDialog.vue";
 import EditCategoryDialog from "./components/Dialogs/EditCategoryDialog.vue";
 import ExportButton from "./components/ExportButton.vue";
 import Importing from "./components/Importing.vue";
@@ -138,13 +140,19 @@ export default class App extends Vue {
       this.uploading = true;
       const canvas = generateKinklistImage(this.categories, this.ratings, this.username, this.encodeData);
       const id = await uploadImageToImgur(canvas);
-      showDialog(UploadResultDialog, { uploadId: id, hasEncodedData: this.encodeData });
+      const hasAnyComment = this.categories.some((c) => c.kinks.some((k) => k.comment));
+      showDialog(UploadResultDialog, { uploadId: id, hasEncodedData: this.encodeData && hasAnyComment });
     } catch (ex) {
       showDialog(ErrorDialog, { message: "Something went wrong uploading the image" });
       console.error("Something went wrong uploading kinklist");
       console.error(ex);
     }
     this.uploading = false;
+  }
+
+  public showAbout(): void {
+    this.toggleOptions(false);
+    showDialog(AboutDialog, {});
   }
 
   public async addCategory(): Promise<void> {
@@ -567,6 +575,14 @@ main {
       width: 13px;
     }
   }
+}
+
+.about-btn {
+  border: 0;
+  padding-left: calc(20px + 0.3em);
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
 }
 
 input {

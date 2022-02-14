@@ -6,15 +6,22 @@
     <div class="upload-dialog-content">
       <h3>Imgur link</h3>
       <div class="row">
-        <input ref="uploadImgurId" readonly :value="uploadUrl" />
-        <button class="clipboard hide-text" title="Copy to clipboard" @click="copyUploadUrlToClipboard('uploadImgurId', uploadUrl)">Copy to clipboard</button>
+        <input ref="imgurUrlRef" readonly :value="uploadUrl" />
+        <button class="clipboard hide-text" title="Copy to clipboard" @click="copyUploadUrlToClipboard('imgurUrlRef', uploadUrl)">Copy to clipboard</button>
         <a :href="uploadUrl" target="_blank" class="hide-text">Goto Imgur</a>
       </div>
       <h3>Kinklist link</h3>
       <div class="row">
-        <input ref="uploadKinklistId" readonly :value="viewUrl" />
-        <button class="clipboard hide-text" title="Copy to clipboard" @click="copyUploadUrlToClipboard('uploadKinklistId', viewUrl)">Copy to clipboard</button>
+        <input ref="viewUrlRef" readonly :value="viewUrl" />
+        <button class="clipboard hide-text" title="Copy to clipboard" @click="copyUploadUrlToClipboard('viewUrlRef', viewUrl)">Copy to clipboard</button>
       </div>
+      <template v-if="hasEncodedData">
+        <h3>BBCode</h3>
+        <div class="row">
+          <textarea ref="bbcodeRef" v-text="bbcode" readonly></textarea>
+          <button class="clipboard hide-text" title="Copy to clipboard" @click="copyUploadUrlToClipboard('bbcodeRef', bbcode)">Copy to clipboard</button>
+        </div>
+      </template>
     </div>
     <transition name="slide">
       <div class="toast" v-if="toast">{{ toast }}</div>
@@ -43,7 +50,11 @@ export default class UploadResultDialog extends Vue {
   }
 
   public get viewUrl(): string {
-    return this.uploadId ? `${location.protocol}://${location.host}${location.pathname}#${this.uploadId}` : '';
+    return this.uploadId ? `${location.protocol}//${location.host}${location.pathname}#${this.uploadId}` : '';
+  }
+
+  public get bbcode(): string {
+    return `[Kinklist](${this.uploadUrl}) (To view included notes: [Kinklist Details](${this.viewUrl}))`;
   }
 
   public copyUploadUrlToClipboard(ref: string, url: string): void {
@@ -84,6 +95,14 @@ export default class UploadResultDialog extends Vue {
     height: 28px;
     font-family: 'Courier New', Courier, monospace;
     text-align: center;
+    font-size: 16px;
+  }
+
+  textarea {
+    flex: 1;
+    height: 100px;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: left;
     font-size: 16px;
   }
 

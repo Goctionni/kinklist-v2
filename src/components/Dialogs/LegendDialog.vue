@@ -7,7 +7,7 @@
       <p>
         <strong>Warning:</strong> Though you can edit the ratings and colors for kinklist,
         the current selection of colors was made to be distinguishable by people with
-        colorblindness.
+        colorblindness. Changing the used colors is therefor discouraged.
       </p>
       <div class="ratings-head">
         <h3>Ratings</h3>
