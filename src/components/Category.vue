@@ -59,6 +59,7 @@ export default class Category extends Vue {
 
       this.category.name = result.name;
       type Ratings = Record<string, string>;
+      this.category.subcategories = result.subcategories;
       this.category.kinks = this.category.kinks.map((kink): InKink => {
         return {
           ...kink,
