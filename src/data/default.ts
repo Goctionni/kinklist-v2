@@ -23,7 +23,7 @@ const createKinkCategory = (name: string, subcategories: string[], kinks: string
 });
 
 export const getDefaultKinkContent = (defaultRating: string): InKinkCategory[] => [
-    createKinkCategory("Bodies", ["General"], ["Skinny", "Chubby", "Small breasts", "Large breasts", "Small cocks", "Large cocks"], defaultRating),
+    createKinkCategory("Bodies", ["Self", "Partner"], ["Skinny", "Chubby", "Small breasts", "Large breasts", "Small cocks", "Large cocks"], defaultRating),
     createKinkCategory("Clothing", ["Self", "Partner"], ["Clothed sex", "Lingerie", "Stockings", "Heels", "Leather", "Latex", "Uniform / costume", "Cross-dressing"], defaultRating),
     createKinkCategory("Groupings", ["General"], ["You and 1 male", "You and 1 female", "You and trans female", "You and trans male", "You and 1 male, 1 female", "You and 2 males", "You and 2 females", "Orgy"], defaultRating),
     createKinkCategory("General", ["Giving", "Receiving"], ["Romance / Affection", "Handjob / fingering", "Blowjob", "Deep throat", "Swallowing", "Facials", "Cunnilingus", "Face-sitting", "Edging", "Teasing", "JOI, SI"], defaultRating),
@@ -31,8 +31,8 @@ export const getDefaultKinkContent = (defaultRating: string): InKinkCategory[] =
     createKinkCategory("Restrictive", ["Self", "Partner"], ["Gag", "Collar", "Leash", "Chastity", "Bondage (Light)", "Bondage (Heavy)", "Encasement"], defaultRating),
     createKinkCategory("Toys", ["Self", "Partner"], ["Dildos", "Plugs", "Vibrators", "Sounding"], defaultRating),
     createKinkCategory("Domination", ["Dominant", "Submissive"], ["Dominant / Submissive", "Domestic servitude", "Slavery", "Pet play", "DD/lg, MD/lb", "Discipline", "Begging", "Forced orgasm", "Orgasm control", "Orgasm denial", "Power exchange"], defaultRating),
-    createKinkCategory("No consent", ["Aggressor", "Target"], ["Non-con / rape", "Blackmail / coercion", "Kidnapping", "Drugs / alcohol", "Sleep play"], defaultRating),
-    createKinkCategory("Taboo", ["General"], ["Incest", "Age gap", "Interracial / Raceplay", "Bestiality", "Necrophilia", "Cheating", "Exhibitionism", "Voyeurism"], defaultRating),
+    createKinkCategory("No consent", ["Aggressor", "Target"], ["Non-con / rape", "Blackmail / coercion", "Kidnapping", "Drugs", "Alcohol", "Sleep play"], defaultRating),
+    createKinkCategory("Taboo", ["General"], ["Incest", "Age gap", "Raceplay", "Bestiality", "Necrophilia", "Cheating", "Exhibitionism", "Voyeurism"], defaultRating),
     createKinkCategory("Surrealism", ["Self", "Partner"], ["Futanari", "Furry", "Vore", "Transformation", "Tentacles", "Monster or Alien"], defaultRating),
     createKinkCategory("Fluids", ["General"], ["Blood", "Watersports", "Scat", "Lactation", "Diapers", "Cum play"], defaultRating),
     createKinkCategory("Degradation", ["Giving", "Receiving"], ["Glory hole", "Name calling", "Humiliation"], defaultRating),

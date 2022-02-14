@@ -1,5 +1,6 @@
 import { ExKinkCategory, InKinkCategory, ExKink } from "@/types/kinks";
 import { Rating } from "@/types/ratings";
+import { APP_VERSION } from "@/version";
 
 const config = {
     numCols: 6,
@@ -83,7 +84,7 @@ const createCanvas = (width: number, height: number): { canvas: HTMLCanvasElemen
 const addUsernameToCanvas = (context: CanvasRenderingContext2D, username: string): void => {
     context.font = "bold 24px Arial";
     context.fillStyle = '#000000';
-    context.fillText('Kinklist ' + username, 5, 25);
+    context.fillText(`Kinklist (v${APP_VERSION})` + username, 5, 25);
 }
 
 const divideCategoryColumns = (categories: ExKinkCategory[]): { columns: ExKinkCategory[][], tallestColumnHeight: number } => {
