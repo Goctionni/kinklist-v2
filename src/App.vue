@@ -3,7 +3,7 @@
     <Importing v-if="importing" />
     <div v-else class="app">
       <header>
-        <h1>Kinklist</h1>
+        <h1>Elle and April's Kinklist</h1>
         <input type="text" v-model="username" placeholder="Enter username" />
         <div class="spacer"></div>
         <Legend :ratings="ratings" @updateRatings="updateRatings($event)" />
