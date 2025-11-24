@@ -8,21 +8,26 @@
         <div class="spacer"></div>
         <Legend :ratings="ratings" @updateRatings="updateRatings($event)" />
         <ExportButton :loading="uploading" @click="exportImage()" />
+        <DownloadButton @click="downloadImage()" />
         <div class="dropdown-container">
           <button class="dropdown-toggle hide-text" @click="toggleOptions(true)">Options</button>
           <transition name="fade">
             <div class="options-dropdown" v-if="showOptions">
               <div class="backdrop" @click="toggleOptions(false)"></div>
               <div class="options-dropdown-content">
-                <!-- <div class="option checkbox">
+                <div class="option checkbox">
                   <input type="checkbox" id="darkmode" v-model="darkMode">
                   <label for="darkmode">Dark mode</label>
-                </div> -->
+                </div>
                 <div class="option checkbox">
                   <input type="checkbox" id="encodeData" v-model="encodeData">
                   <label for="encodeData">Encode data</label>
                 </div>
                 <button class="about-btn" @click="showAbout()">About</button>
+                <div class="client-id">
+                  <label for="clientid">IMGUR Client ID</label>
+                  <input type="text" name="clientid" v-model="clientId" />
+                </div>
               </div>
             </div>
           </transition>
@@ -49,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { InKink, InKinkCategory } from "./types/kinks";
 import { getDefaultKinkContent, getDefaultRatings } from "./data/default";
 import { Rating } from "./types/ratings";
@@ -66,14 +71,18 @@ import ErrorDialog from "./components/Dialogs/ErrorDialog.vue";
 import AboutDialog from "./components/Dialogs/AboutDialog.vue";
 import EditCategoryDialog from "./components/Dialogs/EditCategoryDialog.vue";
 import ExportButton from "./components/ExportButton.vue";
+import DownloadButton from "./components/DownloadButton.vue";
 import Importing from "./components/Importing.vue";
 import Legend from "./components/Legend.vue";
 import { generateId } from "./util/idGenerator";
+import { downloadImage } from "./util/downloadImage";
+import { IMGUR_CLIENT_ID } from "./constants";
 
 @Component({
   components: {
     Category,
     ExportButton,
+    DownloadButton,
     Importing,
     Legend,
   },
@@ -83,10 +92,11 @@ export default class App extends Vue {
   categories: InKinkCategory[] = [];
   username = "";
   uploadId = "";
+  clientId = IMGUR_CLIENT_ID;
   uploading = false;
   importing = false;
   showOptions = false;
-  // darkMode = false;
+  darkMode = false;
   encodeData = true;
   numColumns = 4;
 
@@ -135,11 +145,16 @@ export default class App extends Vue {
     this.numColumns = Math.max(1, Math.floor(screenWidth / 400));
   }
 
+  public downloadImage(): void {
+    const canvas = generateKinklistImage(this.categories, this.ratings, this.username, this.encodeData);
+    downloadImage(canvas);
+  }
+
   public async exportImage(): Promise<void> {
     try {
       this.uploading = true;
       const canvas = generateKinklistImage(this.categories, this.ratings, this.username, this.encodeData);
-      const id = await uploadImageToImgur(canvas);
+      const id = await uploadImageToImgur(canvas, this.clientId);
       const hasAnyComment = this.categories.some((c) => c.kinks.some((k) => k.comment));
       showDialog(UploadResultDialog, { uploadId: id, hasEncodedData: this.encodeData && hasAnyComment });
     } catch (ex) {
@@ -262,6 +277,12 @@ export default class App extends Vue {
     this.username = "";
     this.ratings = getDefaultRatings();
     this.categories = getDefaultKinkContent(this.ratings[0].name);
+  }
+
+  @Watch('darkMode')
+  updateDarkMode(): void {
+    if (this.darkMode) document.body.classList.add('theme-dark');
+    else document.body.classList.remove('theme-dark');
   }
 }
 </script>
@@ -416,6 +437,10 @@ button {
   }
 }
 
+body.theme-dark {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity .35s;
 }
@@ -429,6 +454,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 1em;  
+  background: #E2E2E8;
 }
 
 header {
@@ -457,6 +483,16 @@ header {
     .dropdown-container {
       height: 37px;
     }
+  }
+}
+
+.client-id {
+  margin-top: .5em;
+  font-size: 14px;
+
+  input {
+    padding: 4px;
+    height: auto;
   }
 }
 
